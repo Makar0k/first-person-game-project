@@ -8,6 +8,7 @@ public class Player : MonoBehaviour
     public float jumpForce = 20f;
     public Transform selectedCamera;
     public Transform head;
+    public Transform rightHand;
     public float movementSpeed = 5f;
     public float sprintSpeed = 10f;
     float mouseX = 0;
@@ -27,44 +28,37 @@ public class Player : MonoBehaviour
     CapsuleCollider mainCollider;
     Vector3 settedHeadPos;
     bool isSprintKeyPressed;
+    Animator animatorCamera;
+
+    [Header("Weapon Models")]
+    public Transform flashlightModel;
 
     void Start()
     {
         rb = GetComponent<Rigidbody>();
         mainCollider = GetComponent<CapsuleCollider>();
         settedHeadPos = head.localPosition;
+        animatorCamera = selectedCamera.GetComponent<Animator>();
     }
 
     void Update()
     {
-        selectedCamera.position = head.transform.position;
         mouseX += Input.GetAxis("Mouse X") * mouseSens;
         mouseY += Input.GetAxis("Mouse Y") * mouseSens;
+        mouseY = Mathf.Clamp(mouseY, -80f, 80f); // View limits
+        selectedCamera.rotation = Quaternion.Euler(new Vector3(-mouseY, mouseX, 0)); // Setting Up Camera rotation to mouse Axis
 
-        selectedCamera.rotation = Quaternion.Euler(new Vector3(-mouseY, mouseX, 0));
         transform.rotation = Quaternion.Euler(new Vector3(0, mouseX, 0));
-        head.rotation = selectedCamera.rotation;
+        head.rotation = selectedCamera.rotation; //Head - The object, to which camera is connected but without parenting it
+
+        
 
         if(Input.GetKeyDown("c"))
         {
-            if(isCrouching == false)
-            {
-                isCrouching = true;
-                GetComponent<CapsuleCollider>().height = GetComponent<CapsuleCollider>().height/2;
-                settedHeadPos = new Vector3(head.localPosition.x, head.localPosition.y - 0.5f, head.localPosition.z);
-            }
-            else
-            {   
-                RaycastHit hit;
-                if(!Physics.Raycast(transform.position, Vector3.up, out hit, GetComponent<Collider>().bounds.extents.y/2 + 0.5f))
-                {
-                    isCrouching = false;
-                    settedHeadPos = new Vector3(head.localPosition.x, head.localPosition.y + 0.5f, head.localPosition.z);
-                    GetComponent<CapsuleCollider>().height = GetComponent<CapsuleCollider>().height*2;
-                }
-            }
+            StandPlayerUp(isCrouching);
         }
-        if(Input.GetKey(KeyCode.LeftShift))
+
+        if(Input.GetKey(KeyCode.LeftShift) && isGrounded && !isCrouching)
         {
             isSprintKeyPressed = true;
         }
@@ -84,13 +78,23 @@ public class Player : MonoBehaviour
         Vector3 lookRot = new Vector3(-rb.velocity.x, 0, rb.velocity.z);
         isGrounded = IsGrounded();
 
+        //Camera Lerp (it will make stairs stepping smooth, but there will be some delay with camera and player itself)
+        selectedCamera.position = Vector3.Lerp(selectedCamera.position, head.transform.position, Time.fixedDeltaTime * 20);
+
         if(isGrounded)
         {
             gravityMultiplier = 1f;
             jumpVelocity = 0;
             if(Input.GetKey("space"))
             {
-                jumpVelocity += jumpForce;
+                if(isCrouching)
+                {
+                    StandPlayerUp(true);
+                }
+                else
+                {
+                    jumpVelocity += jumpForce;
+                }
             }
         }
         else
@@ -115,6 +119,31 @@ public class Player : MonoBehaviour
                 {
                     transform.position -= new Vector3(0, -stepHeight, 0);
                 }
+            }
+        }
+    }
+
+    public void StandPlayerUp(bool arg)
+    {
+        switch(arg)
+        {
+            case false:
+            {
+                isCrouching = true;
+                GetComponent<CapsuleCollider>().height = GetComponent<CapsuleCollider>().height/2;
+                settedHeadPos = new Vector3(head.localPosition.x, head.localPosition.y - 0.5f, head.localPosition.z);
+                break;
+            }
+            case true:
+            {
+                RaycastHit hit;
+                if(!Physics.Raycast(transform.position, Vector3.up, out hit, GetComponent<Collider>().bounds.extents.y/2 + 0.5f))
+                {
+                    isCrouching = false;
+                    settedHeadPos = new Vector3(head.localPosition.x, head.localPosition.y + 0.5f, head.localPosition.z);
+                    GetComponent<CapsuleCollider>().height = GetComponent<CapsuleCollider>().height*2;
+                }
+                break;
             }
         }
     }
