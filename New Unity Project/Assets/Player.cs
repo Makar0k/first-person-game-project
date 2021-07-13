@@ -9,6 +9,7 @@ public class Player : MonoBehaviour
     public Transform selectedCamera;
     public Transform head;
     public Transform rightHand;
+    public Transform leftHand;
     public float movementSpeed = 5f;
     public float sprintSpeed = 10f;
     float mouseX = 0;
@@ -18,6 +19,7 @@ public class Player : MonoBehaviour
     float jumpVelocity = 0;
     float gravityMultiplier = 1f;
     bool isCrouching = false;
+
     [Header("Stairs stepping")]
     public float lowerStairRayHeight = 0.1f;
     public float upperStairRayHeight = 0.5f;
@@ -28,30 +30,57 @@ public class Player : MonoBehaviour
     CapsuleCollider mainCollider;
     Vector3 settedHeadPos;
     bool isSprintKeyPressed;
-    Animator animatorCamera;
+    public bool mouseLocked = false;
+    RaycastHit cameraHit;
+    [HideInInspector] public List<item> inventory;
+    LayerMask cameraMask;
 
     [Header("Weapon Models")]
-    public Transform flashlightModel;
+    GameObject LeftHandItem;
+    byte LHitemID;
+    GameObject RightHandItem;
+    byte RHitemID;
 
     void Start()
     {
+        cameraMask = LayerMask.GetMask("Player");
+        cameraMask = ~cameraMask;
+        inventory = new List<item>();
         rb = GetComponent<Rigidbody>();
         mainCollider = GetComponent<CapsuleCollider>();
         settedHeadPos = head.localPosition;
-        animatorCamera = selectedCamera.GetComponent<Animator>();
     }
 
     void Update()
     {
-        mouseX += Input.GetAxis("Mouse X") * mouseSens;
-        mouseY += Input.GetAxis("Mouse Y") * mouseSens;
+        if(mouseLocked == false)
+        {
+            mouseX += Input.GetAxis("Mouse X") * mouseSens;
+            mouseY += Input.GetAxis("Mouse Y") * mouseSens;
+        }
         mouseY = Mathf.Clamp(mouseY, -80f, 80f); // View limits
         selectedCamera.rotation = Quaternion.Euler(new Vector3(-mouseY, mouseX, 0)); // Setting Up Camera rotation to mouse Axis
+        
+        if(RightHandItem != null)
+            RightHandItem.transform.rotation = Quaternion.Euler(head.rotation.eulerAngles + RightHandItem.GetComponent<item>().AdditionalRotation);
+        
+        if(LeftHandItem != null)
+            LeftHandItem.transform.rotation =  Quaternion.Euler(head.rotation.eulerAngles + LeftHandItem.GetComponent<item>().AdditionalRotation);
 
         transform.rotation = Quaternion.Euler(new Vector3(0, mouseX, 0));
         head.rotation = selectedCamera.rotation; //Head - The object, to which camera is connected but without parenting it
 
-        
+        if(Physics.Raycast(selectedCamera.transform.position, selectedCamera.transform.forward, out cameraHit, 20f, cameraMask))
+        {
+            if(cameraHit.transform.gameObject.tag == "item")
+            {
+                if(Input.GetKey("f"))
+                {
+                    inventory.Add(cameraHit.transform.GetComponent<item>());
+                    Destroy(cameraHit.transform.gameObject);
+                }
+            }
+        }
 
         if(Input.GetKeyDown("c"))
         {
@@ -80,6 +109,12 @@ public class Player : MonoBehaviour
 
         //Camera Lerp (it will make stairs stepping smooth, but there will be some delay with camera and player itself)
         selectedCamera.position = Vector3.Lerp(selectedCamera.position, head.transform.position, Time.fixedDeltaTime * 20);
+
+        if(RightHandItem != null)
+            RightHandItem.transform.position = Vector3.Lerp(RightHandItem.transform.position, rightHand.position, 20 * Time.deltaTime);
+        
+        if(LeftHandItem != null)
+            LeftHandItem.transform.position = Vector3.Lerp(LeftHandItem.transform.position, leftHand.position, 20 * Time.deltaTime);
 
         if(isGrounded)
         {
@@ -122,7 +157,6 @@ public class Player : MonoBehaviour
             }
         }
     }
-
     public void StandPlayerUp(bool arg)
     {
         switch(arg)
@@ -167,5 +201,27 @@ public class Player : MonoBehaviour
         Debug.DrawRay(transform.position  + new Vector3(0,0,-mainCollider.radius/2 + 0.01f), -Vector3.up, Color.blue);
 
         return false;    
+    }
+    public void TakeItemInLeftHand(int id)
+    {
+        if(inventory.Count < id + 1) return;
+        Destroy(LeftHandItem);
+        LeftHandItem = Instantiate(inventory[id].model, transform.position, Quaternion.Euler(new Vector3(0,0,0)));
+        if(id == RHitemID)
+        {
+            Destroy(RightHandItem);
+        }
+        LHitemID = (byte)id;
+    }
+    public void TakeItemInRightHand(int id)
+    {
+        if(inventory.Count < id + 1) return;
+        Destroy(RightHandItem);
+        RightHandItem = Instantiate(inventory[id].model, transform.position, Quaternion.Euler(new Vector3(0,0,0)));
+        if(id == LHitemID)
+        {
+            Destroy(LeftHandItem);
+        }
+        RHitemID = (byte)id;
     }
 }
