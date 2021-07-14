@@ -40,6 +40,7 @@ public class Player : MonoBehaviour
     byte LHitemID;
     GameObject RightHandItem;
     byte RHitemID;
+    private Vector3 itemVelocity = Vector3.zero;
 
     void Start()
     {
@@ -50,7 +51,11 @@ public class Player : MonoBehaviour
         mainCollider = GetComponent<CapsuleCollider>();
         settedHeadPos = head.localPosition;
     }
-
+    void LateUpdate()
+    {
+        
+    
+    }
     void Update()
     {
         if(mouseLocked == false)
@@ -59,16 +64,28 @@ public class Player : MonoBehaviour
             mouseY += Input.GetAxis("Mouse Y") * mouseSens;
         }
         mouseY = Mathf.Clamp(mouseY, -80f, 80f); // View limits
+
         selectedCamera.rotation = Quaternion.Euler(new Vector3(-mouseY, mouseX, 0)); // Setting Up Camera rotation to mouse Axis
-        
+        //Camera Lerp (it will make stairs stepping smooth, but there will be some delay with camera and player itself)
+        //selectedCamera.position = Vector3.Lerp(selectedCamera.position, head.transform.position, Time.fixedDeltaTime * 40);
+        selectedCamera.position = Vector3.SmoothDamp(selectedCamera.position, head.transform.position, ref itemVelocity, 0.06f);
+
         if(RightHandItem != null)
-            RightHandItem.transform.rotation = Quaternion.Euler(head.rotation.eulerAngles + RightHandItem.GetComponent<item>().AdditionalRotation);
+        {
+            
+            RightHandItem.transform.rotation = rightHand.rotation;
+            RightHandItem.transform.Rotate(RightHandItem.GetComponent<item>().AdditionalRotation);
+            RightHandItem.transform.position = Vector3.Lerp(RightHandItem.transform.position, rightHand.position, Time.deltaTime/Time.fixedDeltaTime);
+        }
         
         if(LeftHandItem != null)
-            LeftHandItem.transform.rotation =  Quaternion.Euler(head.rotation.eulerAngles + LeftHandItem.GetComponent<item>().AdditionalRotation);
+        {
+            LeftHandItem.transform.rotation =  leftHand.rotation;
+            LeftHandItem.transform.Rotate(LeftHandItem.GetComponent<item>().AdditionalRotation);
+            LeftHandItem.transform.position = Vector3.Lerp(LeftHandItem.transform.position, leftHand.position, Time.deltaTime/Time.fixedDeltaTime);
+        }
 
-        transform.rotation = Quaternion.Euler(new Vector3(0, mouseX, 0));
-        head.rotation = selectedCamera.rotation; //Head - The object, to which camera is connected but without parenting it
+        //head.rotation = selectedCamera.rotation; //Head - The object, to which camera is connected but without parenting it
 
         if(Physics.Raycast(selectedCamera.transform.position, selectedCamera.transform.forward, out cameraHit, 20f, cameraMask))
         {
@@ -106,15 +123,8 @@ public class Player : MonoBehaviour
     {
         Vector3 lookRot = new Vector3(-rb.velocity.x, 0, rb.velocity.z);
         isGrounded = IsGrounded();
+        transform.rotation = Quaternion.Euler(new Vector3(0, mouseX, 0));
 
-        //Camera Lerp (it will make stairs stepping smooth, but there will be some delay with camera and player itself)
-        selectedCamera.position = Vector3.Lerp(selectedCamera.position, head.transform.position, Time.fixedDeltaTime * 20);
-
-        if(RightHandItem != null)
-            RightHandItem.transform.position = Vector3.Lerp(RightHandItem.transform.position, rightHand.position, 20 * Time.deltaTime);
-        
-        if(LeftHandItem != null)
-            LeftHandItem.transform.position = Vector3.Lerp(LeftHandItem.transform.position, leftHand.position, 20 * Time.deltaTime);
 
         if(isGrounded)
         {
