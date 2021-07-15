@@ -9,6 +9,8 @@ public class item : MonoBehaviour
     public GameObject model;
     public Sprite icon;
     public Vector3 AdditionalRotation;
+    public float supplyCount;
+    public byte currentHand = 0; //1 - Left | 2 - Right
 
     void Start()
     {

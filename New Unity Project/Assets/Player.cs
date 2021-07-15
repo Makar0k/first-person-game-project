@@ -217,6 +217,8 @@ public class Player : MonoBehaviour
         if(inventory.Count < id + 1) return;
         Destroy(LeftHandItem);
         LeftHandItem = Instantiate(inventory[id].model, transform.position, Quaternion.Euler(new Vector3(0,0,0)));
+        LeftHandItem.layer = 6;
+        LeftHandItem.GetComponent<item>().currentHand = 1;
         if(id == RHitemID)
         {
             Destroy(RightHandItem);
@@ -228,6 +230,8 @@ public class Player : MonoBehaviour
         if(inventory.Count < id + 1) return;
         Destroy(RightHandItem);
         RightHandItem = Instantiate(inventory[id].model, transform.position, Quaternion.Euler(new Vector3(0,0,0)));
+        RightHandItem.layer = 6;
+        LeftHandItem.GetComponent<item>().currentHand = 2;
         if(id == LHitemID)
         {
             Destroy(LeftHandItem);
