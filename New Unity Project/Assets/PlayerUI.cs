@@ -123,6 +123,13 @@ public class PlayerUI : MonoBehaviour
     
     public void updateInventory()
     {
+        // Ammo count update
+        for(int i = 0; i < player.ammo.Length; i++)
+        {
+            leftInventory.transform.GetChild(1).GetChild(i).GetComponent<Text>().text = "" + player.ammo[i];
+            rightInventory.transform.GetChild(1).GetChild(i).GetComponent<Text>().text = "" + player.ammo[i];
+        }
+        // Inventory items UI update
         for(int i = 0; i < player.inventory.Count; i++)
         {
             leftInventoryUI.GetChild(i).GetChild(0).GetComponent<Image>().sprite = player.inventory[i].icon;

@@ -37,10 +37,11 @@ public class Player : MonoBehaviour
 
     [Header("Weapon Models")]
     GameObject LeftHandItem;
-    byte LHitemID;
+    [HideInInspector] public byte LHitemID;
     GameObject RightHandItem;
-    byte RHitemID;
-    private Vector3 itemVelocity = Vector3.zero;
+    [HideInInspector] public byte RHitemID;
+    private Vector3 itemVelocity = Vector3.zero; // Zero Velocity for camera smooth moving
+    public byte[] ammo = new byte[3] { 0, 0, 0 }; //Ammo amount | 0 - Battery | 1 - Pistol | 2 - Shotgun
 
     void Start()
     {
@@ -94,7 +95,7 @@ public class Player : MonoBehaviour
                 if(Input.GetKey("f"))
                 {
                     inventory.Add(cameraHit.transform.GetComponent<item>());
-                    Destroy(cameraHit.transform.gameObject);
+                    cameraHit.transform.gameObject.SetActive(false);
                 }
             }
         }
@@ -217,8 +218,12 @@ public class Player : MonoBehaviour
         if(inventory.Count < id + 1) return;
         Destroy(LeftHandItem);
         LeftHandItem = Instantiate(inventory[id].model, transform.position, Quaternion.Euler(new Vector3(0,0,0)));
+        LeftHandItem.SetActive(true);
         LeftHandItem.layer = 6;
+        Destroy(LeftHandItem.GetComponent<Rigidbody>());
+        LeftHandItem.GetComponent<Collider>().enabled = false;
         LeftHandItem.GetComponent<item>().currentHand = 1;
+        LeftHandItem.GetComponent<item>().supplyCount = inventory[id].supplyCount;
         if(id == RHitemID)
         {
             Destroy(RightHandItem);
@@ -230,8 +235,12 @@ public class Player : MonoBehaviour
         if(inventory.Count < id + 1) return;
         Destroy(RightHandItem);
         RightHandItem = Instantiate(inventory[id].model, transform.position, Quaternion.Euler(new Vector3(0,0,0)));
+        RightHandItem.SetActive(true);
         RightHandItem.layer = 6;
-        LeftHandItem.GetComponent<item>().currentHand = 2;
+        Destroy(RightHandItem.GetComponent<Rigidbody>());
+        RightHandItem.GetComponent<Collider>().enabled = false;
+        RightHandItem.GetComponent<item>().currentHand = 2;
+        RightHandItem.GetComponent<item>().supplyCount = inventory[id].supplyCount;
         if(id == LHitemID)
         {
             Destroy(LeftHandItem);
