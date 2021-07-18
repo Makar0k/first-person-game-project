@@ -44,7 +44,7 @@ public class flashlight : MonoBehaviour
                 }
                 if(player.inventory[itemID].supplyCount <= 0 && player.ammo[0] > 0)
                 {
-                     player.ammo[0] -= 1;
+                     player.ammo[GetComponent<item>().ammoType] -= 1;
                      player.inventory[itemID].supplyCount = 100f;
                 }
             }
@@ -66,7 +66,7 @@ public class flashlight : MonoBehaviour
                 if(player.inventory[itemID].supplyCount <= 0 && player.ammo[0] > 0)
                 {
                      player.ammo[0] -= 1;
-                     player.inventory[itemID].supplyCount = 100f;
+                     player.inventory[itemID].supplyCount = player.inventory[itemID].maxSupplyCount;
                 }
             }
         }
@@ -75,8 +75,7 @@ public class flashlight : MonoBehaviour
     {
         if(isFLTurnedOn && player.inventory[itemID].supplyCount > 0)
         {
-            player.inventory[itemID].supplyCount -= batteryHarm * Time.timeScale;
-            print(player.inventory[itemID].supplyCount);   
+            player.inventory[itemID].supplyCount -= batteryHarm * Time.timeScale; 
         }
         else
         {

@@ -19,6 +19,10 @@ public class PlayerUI : MonoBehaviour
     public Transform rightInventoryUI;
     public Transform itemInfoPanel;
     public int currentUIitem;
+    [Header("Equiped Items Stuff")]
+    public Transform leftItemInfo;
+    public Transform rightItemInfo;
+    public List<Sprite> ammoTypesIcons;
 
     void Start()
     {
@@ -37,15 +41,51 @@ public class PlayerUI : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        // In hand items short info panel update
+        if(player.LeftHandItem != null && !isLeftInvActive)
+        {
+            leftItemInfo.GetChild(1).GetComponent<Text>().text = "" + Mathf.Round(player.inventory[player.LHitemID].supplyCount) +"/"+ player.inventory[player.LHitemID].maxSupplyCount;
+            leftItemInfo.GetChild(3).GetComponent<Text>().text = ""+ player.ammo[player.LeftHandItem.GetComponent<item>().ammoType];
+            if(leftItemInfo.gameObject.activeSelf == false)
+            {
+                leftItemInfo.GetChild(0).GetComponent<Text>().text = player.inventory[player.LHitemID]._name;
+                leftItemInfo.GetChild(2).GetComponent<Image>().sprite = ammoTypesIcons[player.LeftHandItem.GetComponent<item>().ammoType];
+                leftItemInfo.gameObject.SetActive(true);
+            }
+        }
+        else if((leftItemInfo.gameObject.activeSelf == true && player.LeftHandItem == null) || isLeftInvActive)
+        {
+            leftItemInfo.gameObject.SetActive(false);
+        }
+
+        if(player.RightHandItem != null && !isRightInvActive)
+        {
+            rightItemInfo.GetChild(3).GetComponent<Text>().text = ""+ player.ammo[player.RightHandItem.GetComponent<item>().ammoType];
+            rightItemInfo.GetChild(1).GetComponent<Text>().text = "" + Mathf.Round(player.inventory[player.RHitemID].supplyCount) +"/"+ player.inventory[player.RHitemID].maxSupplyCount;
+            if(rightItemInfo.gameObject.activeSelf == false)
+            {
+                rightItemInfo.GetChild(0).GetComponent<Text>().text = player.inventory[player.RHitemID]._name;
+                rightItemInfo.GetChild(2).GetComponent<Image>().sprite = ammoTypesIcons[player.RightHandItem.GetComponent<item>().ammoType];
+                rightItemInfo.gameObject.SetActive(true);
+            }
+        }
+        else if((rightItemInfo.gameObject.activeSelf == true && player.RightHandItem == null) || isRightInvActive)
+        {
+            rightItemInfo.gameObject.SetActive(false);
+        }
+
+        // Short info about item in inventory
         itemInfoPanel.position = Input.mousePosition;
         if(isLeftInvActive || isRightInvActive)
         {
+            Cursor.lockState = CursorLockMode.None;
             Time.timeScale = 0.1f;
             Time.fixedDeltaTime = 0.003f;
             player.mouseLocked = true;
         }
         else
         {
+            Cursor.lockState = CursorLockMode.Locked;
             Time.timeScale = 1f;
             Time.fixedDeltaTime = 0.02f;
             player.mouseLocked = false;

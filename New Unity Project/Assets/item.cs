@@ -10,7 +10,9 @@ public class item : MonoBehaviour
     public Sprite icon;
     public Vector3 AdditionalRotation;
     public float supplyCount = 0;
+    public float maxSupplyCount = 0;
     public byte currentHand = 0; //1 - Left | 2 - Right
+    public int ammoType = 0;
 
     void Start()
     {

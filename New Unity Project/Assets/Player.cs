@@ -36,9 +36,9 @@ public class Player : MonoBehaviour
     LayerMask cameraMask;
 
     [Header("Weapon Models")]
-    GameObject LeftHandItem;
+    [HideInInspector] public GameObject LeftHandItem;
     [HideInInspector] public byte LHitemID;
-    GameObject RightHandItem;
+    [HideInInspector] public GameObject RightHandItem;
     [HideInInspector] public byte RHitemID;
     private Vector3 itemVelocity = Vector3.zero; // Zero Velocity for camera smooth moving
     public byte[] ammo = new byte[3] { 0, 0, 0 }; //Ammo amount | 0 - Battery | 1 - Pistol | 2 - Shotgun
@@ -96,6 +96,15 @@ public class Player : MonoBehaviour
                 {
                     inventory.Add(cameraHit.transform.GetComponent<item>());
                     cameraHit.transform.gameObject.SetActive(false);
+                }
+            }
+            if(cameraHit.transform.gameObject.tag == "ammo")
+            {
+                if(Input.GetKey("f"))
+                {
+                    ammoPack _ammo = cameraHit.transform.GetComponent<ammoPack>();
+                    ammo[_ammo.ammoType] += _ammo.ammoCount;
+                    Destroy(cameraHit.transform.gameObject);
                 }
             }
         }
