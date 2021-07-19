@@ -40,6 +40,8 @@ public class Player : MonoBehaviour
     [HideInInspector] public byte LHitemID;
     [HideInInspector] public GameObject RightHandItem;
     [HideInInspector] public byte RHitemID;
+    public GameObject cameraStuff;
+
     private Vector3 itemVelocity = Vector3.zero; // Zero Velocity for camera smooth moving
     public byte[] ammo = new byte[3] { 0, 0, 0 }; //Ammo amount | 0 - Battery | 1 - Pistol | 2 - Shotgun
 
@@ -51,11 +53,21 @@ public class Player : MonoBehaviour
         rb = GetComponent<Rigidbody>();
         mainCollider = GetComponent<CapsuleCollider>();
         settedHeadPos = head.localPosition;
+
     }
     void LateUpdate()
-    {
-        
-    
+    {   
+        // Rotation is changing in LateUpdate to avoid Animator rotation change
+        if(RightHandItem != null)
+        {
+            RightHandItem.transform.rotation = rightHand.rotation;
+            RightHandItem.transform.Rotate(RightHandItem.GetComponent<item>().AdditionalRotation);
+        }
+        if(LeftHandItem != null)
+        {
+            LeftHandItem.transform.rotation =  leftHand.rotation;
+            LeftHandItem.transform.Rotate(LeftHandItem.GetComponent<item>().AdditionalRotation);
+        }
     }
     void Update()
     {
@@ -73,17 +85,25 @@ public class Player : MonoBehaviour
 
         if(RightHandItem != null)
         {
-            
-            RightHandItem.transform.rotation = rightHand.rotation;
-            RightHandItem.transform.Rotate(RightHandItem.GetComponent<item>().AdditionalRotation);
-            RightHandItem.transform.position = Vector3.Lerp(RightHandItem.transform.position, rightHand.position, Time.deltaTime/Time.fixedDeltaTime);
+            if(RightHandItem.GetComponent<item>().isReloading)
+            {
+                 RightHandItem.transform.position = Vector3.Lerp(RightHandItem.transform.position, transform.position, Time.deltaTime/Time.fixedDeltaTime);
+            }
+            else
+            {
+                RightHandItem.transform.position = Vector3.Lerp(RightHandItem.transform.position, rightHand.position, Time.deltaTime/Time.fixedDeltaTime);
+            }
         }
-        
         if(LeftHandItem != null)
         {
-            LeftHandItem.transform.rotation =  leftHand.rotation;
-            LeftHandItem.transform.Rotate(LeftHandItem.GetComponent<item>().AdditionalRotation);
-            LeftHandItem.transform.position = Vector3.Lerp(LeftHandItem.transform.position, leftHand.position, Time.deltaTime/Time.fixedDeltaTime);
+            if(LeftHandItem.GetComponent<item>().isReloading)
+            {
+                 LeftHandItem.transform.position = Vector3.Lerp(LeftHandItem.transform.position, transform.position, Time.deltaTime/Time.fixedDeltaTime); 
+            }
+            else
+            {
+                LeftHandItem.transform.position = Vector3.Lerp(LeftHandItem.transform.position, leftHand.position, Time.deltaTime/Time.fixedDeltaTime);
+            }
         }
 
         //head.rotation = selectedCamera.rotation; //Head - The object, to which camera is connected but without parenting it
@@ -229,6 +249,7 @@ public class Player : MonoBehaviour
         LeftHandItem = Instantiate(inventory[id].model, transform.position, Quaternion.Euler(new Vector3(0,0,0)));
         LeftHandItem.SetActive(true);
         LeftHandItem.layer = 6;
+
         Destroy(LeftHandItem.GetComponent<Rigidbody>());
         LeftHandItem.GetComponent<Collider>().enabled = false;
         LeftHandItem.GetComponent<item>().currentHand = 1;
@@ -246,6 +267,7 @@ public class Player : MonoBehaviour
         RightHandItem = Instantiate(inventory[id].model, transform.position, Quaternion.Euler(new Vector3(0,0,0)));
         RightHandItem.SetActive(true);
         RightHandItem.layer = 6;
+
         Destroy(RightHandItem.GetComponent<Rigidbody>());
         RightHandItem.GetComponent<Collider>().enabled = false;
         RightHandItem.GetComponent<item>().currentHand = 2;

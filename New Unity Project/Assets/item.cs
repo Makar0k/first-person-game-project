@@ -13,6 +13,7 @@ public class item : MonoBehaviour
     public float maxSupplyCount = 0;
     public byte currentHand = 0; //1 - Left | 2 - Right
     public int ammoType = 0;
+    public bool isReloading = false;
 
     void Start()
     {

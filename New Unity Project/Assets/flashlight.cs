@@ -10,11 +10,15 @@ public class flashlight : MonoBehaviour
     Player player;
     int currentHand;
     int itemID;
+    public float reloadTime = 5f;
+    float reloadTimer;
+    item itemComponent;
     void Start()
     {
         player = GameObject.Find("Player").GetComponent<Player>();
         _light = transform.GetChild(0);
         currentHand = GetComponent<item>().currentHand;
+        itemComponent = GetComponent<item>();
         if(currentHand == 1)
         {
             itemID = player.LHitemID;
@@ -28,6 +32,20 @@ public class flashlight : MonoBehaviour
     {
         if(player.mouseLocked)
             return;
+
+        if(reloadTimer > 0)
+        {
+            reloadTimer -= Time.deltaTime;
+        }
+
+        // When reload timer is done
+        if(itemComponent.isReloading && reloadTimer <= 0)
+        {
+            itemComponent.isReloading = false;
+            player.ammo[itemComponent.ammoType] -= 1;
+            player.inventory[itemID].supplyCount = 100f;
+        }
+
         if(currentHand == 1)
         {
             if(Input.GetMouseButtonDown(0))
@@ -42,10 +60,10 @@ public class flashlight : MonoBehaviour
                     isFLTurnedOn = false;
                     _light.gameObject.SetActive(false);
                 }
-                if(player.inventory[itemID].supplyCount <= 0 && player.ammo[0] > 0)
+                if(player.inventory[itemID].supplyCount <= 0 && player.ammo[0] > 0 && !itemComponent.isReloading)
                 {
-                     player.ammo[GetComponent<item>().ammoType] -= 1;
-                     player.inventory[itemID].supplyCount = 100f;
+                    reloadTimer = reloadTime;
+                    itemComponent.isReloading = true;
                 }
             }
         }
@@ -63,10 +81,10 @@ public class flashlight : MonoBehaviour
                     isFLTurnedOn = false;
                     _light.gameObject.SetActive(false);
                 }
-                if(player.inventory[itemID].supplyCount <= 0 && player.ammo[0] > 0)
+                if(player.inventory[itemID].supplyCount <= 0 && player.ammo[0] > 0 && !itemComponent.isReloading)
                 {
-                     player.ammo[0] -= 1;
-                     player.inventory[itemID].supplyCount = player.inventory[itemID].maxSupplyCount;
+                    reloadTimer = reloadTime;
+                    itemComponent.isReloading = true;
                 }
             }
         }
