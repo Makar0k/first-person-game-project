@@ -60,7 +60,7 @@ public class flashlight : MonoBehaviour
                     isFLTurnedOn = false;
                     _light.gameObject.SetActive(false);
                 }
-                if(player.inventory[itemID].supplyCount <= 0 && player.ammo[0] > 0 && !itemComponent.isReloading)
+                if(player.inventory[itemID].supplyCount <= 0 && player.ammo[player.inventory[itemID].ammoType] > 0 && !itemComponent.isReloading)
                 {
                     reloadTimer = reloadTime;
                     itemComponent.isReloading = true;
@@ -81,7 +81,7 @@ public class flashlight : MonoBehaviour
                     isFLTurnedOn = false;
                     _light.gameObject.SetActive(false);
                 }
-                if(player.inventory[itemID].supplyCount <= 0 && player.ammo[0] > 0 && !itemComponent.isReloading)
+                if(player.inventory[itemID].supplyCount <= 0 && player.ammo[player.inventory[itemID].ammoType] > 0 && !itemComponent.isReloading)
                 {
                     reloadTimer = reloadTime;
                     itemComponent.isReloading = true;

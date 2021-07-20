@@ -249,6 +249,13 @@ public class Player : MonoBehaviour
         LeftHandItem = Instantiate(inventory[id].model, transform.position, Quaternion.Euler(new Vector3(0,0,0)));
         LeftHandItem.SetActive(true);
         LeftHandItem.layer = 6;
+        if(LeftHandItem.transform.childCount != 0)
+        {
+            for(int i = 0; i > LeftHandItem.transform.childCount; i++)
+            {
+                LeftHandItem.transform.GetChild(i).gameObject.layer = 6;
+            }
+        }
 
         Destroy(LeftHandItem.GetComponent<Rigidbody>());
         LeftHandItem.GetComponent<Collider>().enabled = false;
@@ -267,6 +274,14 @@ public class Player : MonoBehaviour
         RightHandItem = Instantiate(inventory[id].model, transform.position, Quaternion.Euler(new Vector3(0,0,0)));
         RightHandItem.SetActive(true);
         RightHandItem.layer = 6;
+        if(RightHandItem.transform.childCount != 0)
+        {
+            for(int i = 0; i < RightHandItem.transform.childCount; i++)
+            {
+                print(i);
+                RightHandItem.transform.GetChild(i).gameObject.layer = 6;
+            }
+        }
 
         Destroy(RightHandItem.GetComponent<Rigidbody>());
         RightHandItem.GetComponent<Collider>().enabled = false;
