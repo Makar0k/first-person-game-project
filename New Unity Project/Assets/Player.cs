@@ -91,18 +91,18 @@ public class Player : MonoBehaviour
             }
             else
             {
-                RightHandItem.transform.position = Vector3.Lerp(RightHandItem.transform.position, rightHand.position, Time.deltaTime/Time.fixedDeltaTime);
+                RightHandItem.transform.position = Vector3.Lerp(RightHandItem.transform.position, rightHand.transform.TransformPoint(RightHandItem.GetComponent<item>().AdditionalLocalPos), Time.deltaTime/Time.fixedDeltaTime);
             }
         }
         if(LeftHandItem != null)
         {
             if(LeftHandItem.GetComponent<item>().isReloading)
             {
-                 LeftHandItem.transform.position = Vector3.Lerp(LeftHandItem.transform.position, transform.position, Time.deltaTime/Time.fixedDeltaTime); 
+                 LeftHandItem.transform.position = Vector3.Lerp(LeftHandItem.transform.position, transform.position, Time.deltaTime/Time.fixedDeltaTime);
             }
             else
             {
-                LeftHandItem.transform.position = Vector3.Lerp(LeftHandItem.transform.position, leftHand.position, Time.deltaTime/Time.fixedDeltaTime);
+                LeftHandItem.transform.position = Vector3.Lerp(LeftHandItem.transform.position, leftHand.transform.TransformPoint(LeftHandItem.GetComponent<item>().AdditionalLocalPos), Time.deltaTime/Time.fixedDeltaTime);
             }
         }
 
@@ -256,6 +256,11 @@ public class Player : MonoBehaviour
                 LeftHandItem.transform.GetChild(i).gameObject.layer = 6;
             }
         }
+        if(RightHandItem != null )
+        {
+            if(RightHandItem.GetComponent<item>().twoHanded == true)
+            Destroy(RightHandItem);
+        }
 
         Destroy(LeftHandItem.GetComponent<Rigidbody>());
         LeftHandItem.GetComponent<Collider>().enabled = false;
@@ -266,6 +271,12 @@ public class Player : MonoBehaviour
             Destroy(RightHandItem);
         }
         LHitemID = (byte)id;
+
+        if(RightHandItem != null)
+        {
+            if(LeftHandItem.GetComponent<item>().twoHanded == true)
+            Destroy(RightHandItem);
+        }
     }
     public void TakeItemInRightHand(int id)
     {
@@ -283,6 +294,12 @@ public class Player : MonoBehaviour
             }
         }
 
+        if(LeftHandItem != null)
+        {
+            if(LeftHandItem.GetComponent<item>().twoHanded == true)
+            Destroy(LeftHandItem);
+        }
+
         Destroy(RightHandItem.GetComponent<Rigidbody>());
         RightHandItem.GetComponent<Collider>().enabled = false;
         RightHandItem.GetComponent<item>().currentHand = 2;
@@ -292,5 +309,10 @@ public class Player : MonoBehaviour
             Destroy(LeftHandItem);
         }
         RHitemID = (byte)id;
+        if(LeftHandItem != null)
+        {
+            if(RightHandItem.GetComponent<item>().twoHanded == true)
+            Destroy(LeftHandItem);
+        }
     }
 }

@@ -62,6 +62,11 @@ public class pistol : MonoBehaviour
         {
             if(Input.GetMouseButtonDown(0))
             {
+                if(player.inventory[itemID].supplyCount <= 0 && player.ammo[player.inventory[itemID].ammoType] > 0 && !itemComponent.isReloading)
+                {
+                    reloadTimer = reloadTime;
+                    itemComponent.isReloading = true;
+                }
                 if(isShooting == false && player.inventory[itemID].supplyCount > 0)
                 {
                     fire.SetActive(true);
@@ -70,18 +75,18 @@ public class pistol : MonoBehaviour
                     isShooting = true;
                     transform.position -= transform.forward * 0.07f;
                 }
-                
-                if(player.inventory[itemID].supplyCount <= 0 && player.ammo[player.inventory[itemID].ammoType] > 0 && !itemComponent.isReloading)
-                {
-                    reloadTimer = reloadTime;
-                    itemComponent.isReloading = true;
-                }
             }
         }
         if(currentHand == 2)
         {
             if(Input.GetMouseButtonDown(1))
             {
+                
+                if(player.inventory[itemID].supplyCount <= 0 && player.ammo[player.inventory[itemID].ammoType] > 0 && !itemComponent.isReloading)
+                {
+                    reloadTimer = reloadTime;
+                    itemComponent.isReloading = true;
+                }
                 if(isShooting == false  && player.inventory[itemID].supplyCount > 0)
                 {
                     fire.SetActive(true);
@@ -89,12 +94,6 @@ public class pistol : MonoBehaviour
                     player.inventory[itemID].supplyCount -= 1f;
                     isShooting = true;
                     transform.position -= transform.forward * 0.07f;
-                }
-
-                if(player.inventory[itemID].supplyCount <= 0 && player.ammo[player.inventory[itemID].ammoType] > 0 && !itemComponent.isReloading)
-                {
-                    reloadTimer = reloadTime;
-                    itemComponent.isReloading = true;
                 }
             }
         }

@@ -9,11 +9,13 @@ public class item : MonoBehaviour
     public GameObject model;
     public Sprite icon;
     public Vector3 AdditionalRotation;
+    public Vector3 AdditionalLocalPos;
     public float supplyCount = 0;
     public float maxSupplyCount = 0;
     public byte currentHand = 0; //1 - Left | 2 - Right
     public int ammoType = 0;
     public bool isReloading = false;
+    public bool twoHanded = false;
 
     void Start()
     {
