@@ -44,6 +44,8 @@ public class Player : MonoBehaviour
 
     private Vector3 itemVelocity = Vector3.zero; // Zero Velocity for camera smooth moving
     public byte[] ammo = new byte[3] { 0, 0, 0 }; //Ammo amount | 0 - Battery | 1 - Pistol | 2 - Shotgun
+    int stepState = 1;
+    float currentSpeed;
 
     void Start()
     {
@@ -71,6 +73,7 @@ public class Player : MonoBehaviour
     }
     void Update()
     {
+        currentSpeed = rb.velocity.magnitude;
         if(mouseLocked == false)
         {
             mouseX += Input.GetAxis("Mouse X") * mouseSens;
@@ -81,7 +84,35 @@ public class Player : MonoBehaviour
         selectedCamera.rotation = Quaternion.Euler(new Vector3(-mouseY, mouseX, 0)); // Setting Up Camera rotation to mouse Axis
         //Camera Lerp (it will make stairs stepping smooth, but there will be some delay with camera and player itself)
         //selectedCamera.position = Vector3.Lerp(selectedCamera.position, head.transform.position, Time.fixedDeltaTime * 40);
-        selectedCamera.position = Vector3.SmoothDamp(selectedCamera.position, head.transform.position, ref itemVelocity, 0.06f);
+
+        // I have done a code based walking animation for camera
+        if(stepState == 1 && isGrounded && currentSpeed > 1f)
+        {
+            selectedCamera.position = Vector3.SmoothDamp(selectedCamera.position, head.transform.position + new Vector3(0, 0.2f, 0), ref itemVelocity, 0.15f);
+            if(((head.transform.position + new Vector3(0, 0.2f, 0)) - selectedCamera.position).y < 0.1f)
+            {
+                stepState = 2;
+            }
+        }
+        if(stepState == 2  && isGrounded &&  currentSpeed > 1)
+        {
+            selectedCamera.position = Vector3.SmoothDamp(selectedCamera.position, head.transform.position - new Vector3(0, 0.2f, 0), ref itemVelocity, 0.15f);
+            if((selectedCamera.position - (head.transform.position - new Vector3(0, 0.2f, 0))).y < 0.1f)
+            {
+                stepState = 1;
+            }
+        }
+        if(isGrounded && currentSpeed > 1)
+        {
+            selectedCamera.position = Vector3.SmoothDamp(new Vector3(selectedCamera.position.x, selectedCamera.position.y, selectedCamera.position.z), new Vector3(head.transform.position.x,selectedCamera.position.y,head.transform.position.z), ref itemVelocity, 0.05f);
+        }
+        else
+        {
+            selectedCamera.position = Vector3.SmoothDamp(selectedCamera.position, head.transform.position, ref itemVelocity, 0.05f);
+        }
+    
+
+        // Items
 
         if(RightHandItem != null)
         {

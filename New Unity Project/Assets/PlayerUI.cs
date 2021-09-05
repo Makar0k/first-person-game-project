@@ -23,6 +23,7 @@ public class PlayerUI : MonoBehaviour
     public Transform leftItemInfo;
     public Transform rightItemInfo;
     public List<Sprite> ammoTypesIcons;
+    public Sprite defaultItemRamp;
 
     void Start()
     {
@@ -172,8 +173,18 @@ public class PlayerUI : MonoBehaviour
         // Inventory items UI update
         for(int i = 0; i < player.inventory.Count; i++)
         {
-            leftInventoryUI.GetChild(i).GetChild(0).GetComponent<Image>().sprite = player.inventory[i].icon;
-            rightInventoryUI.GetChild(i).GetChild(0).GetComponent<Image>().sprite = player.inventory[i].icon;
+            leftInventoryUI.GetChild(i).GetComponent<Image>().sprite = player.inventory[i].icon;
+            rightInventoryUI.GetChild(i).GetComponent<Image>().sprite = player.inventory[i].icon;
+            if(player.inventory[i].specialRamp != null)
+            {
+                leftInventoryUI.GetChild(i).GetChild(0).GetComponent<Image>().sprite = player.inventory[i].specialRamp;
+                rightInventoryUI.GetChild(i).GetChild(0).GetComponent<Image>().sprite = player.inventory[i].specialRamp;
+            }
+            else
+            {
+                leftInventoryUI.GetChild(i).GetChild(0).GetComponent<Image>().sprite = defaultItemRamp;
+                rightInventoryUI.GetChild(i).GetChild(0).GetComponent<Image>().sprite = defaultItemRamp;
+            }
         }
     }
     public void CheckIsMouseOverButton(int id)

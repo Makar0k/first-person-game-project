@@ -16,6 +16,7 @@ public class item : MonoBehaviour
     public int ammoType = 0;
     public bool isReloading = false;
     public bool twoHanded = false;
+    public Sprite specialRamp;
 
     void Start()
     {
