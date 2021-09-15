@@ -17,6 +17,7 @@ public class item : MonoBehaviour
     public bool isReloading = false;
     public bool twoHanded = false;
     public Sprite specialRamp;
+    public bool showAdditionalInfo = false;
 
     void Start()
     {

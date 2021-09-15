@@ -37,18 +37,21 @@ public class Player : MonoBehaviour
 
     [Header("Weapon Models")]
     [HideInInspector] public GameObject LeftHandItem;
-    [HideInInspector] public byte LHitemID;
+    [HideInInspector] public short LHitemID = -1;
     [HideInInspector] public GameObject RightHandItem;
-    [HideInInspector] public byte RHitemID;
+    [HideInInspector] public short RHitemID = -1;
     public GameObject cameraStuff;
 
     private Vector3 itemVelocity = Vector3.zero; // Zero Velocity for camera smooth moving
     public byte[] ammo = new byte[3] { 0, 0, 0 }; //Ammo amount | 0 - Battery | 1 - Pistol | 2 - Shotgun
     int stepState = 1;
     float currentSpeed;
+    public Transform crosshair;
 
     void Start()
     {
+        LHitemID = -1;
+        RHitemID = -1;
         cameraMask = LayerMask.GetMask("Player");
         cameraMask = ~cameraMask;
         inventory = new List<item>();
@@ -62,13 +65,14 @@ public class Player : MonoBehaviour
         // Rotation is changing in LateUpdate to avoid Animator rotation change
         if(RightHandItem != null)
         {
-            RightHandItem.transform.rotation = rightHand.rotation;
-            RightHandItem.transform.Rotate(RightHandItem.GetComponent<item>().AdditionalRotation);
+            RightHandItem.transform.rotation = Quaternion.Lerp(RightHandItem.transform.rotation, rightHand.rotation * Quaternion.Euler(RightHandItem.GetComponent<item>().AdditionalRotation), Time.deltaTime * 40);
+            //RightHandItem.transform.rotation += Quaternion.Euler(RightHandItem.GetComponent<item>().AdditionalRotation);
         }
         if(LeftHandItem != null)
         {
-            LeftHandItem.transform.rotation =  leftHand.rotation;
-            LeftHandItem.transform.Rotate(LeftHandItem.GetComponent<item>().AdditionalRotation);
+            LeftHandItem.transform.rotation = Quaternion.Lerp(LeftHandItem.transform.rotation, leftHand.rotation * Quaternion.Euler(LeftHandItem.GetComponent<item>().AdditionalRotation), Time.deltaTime * 40);
+            //LeftHandItem.transform.rotation =  leftHand.rotation;
+            //LeftHandItem.transform.Rotate(LeftHandItem.GetComponent<item>().AdditionalRotation);
         }
     }
     void Update()
@@ -88,7 +92,7 @@ public class Player : MonoBehaviour
         // I have done a code based walking animation for camera
         if(stepState == 1 && isGrounded && currentSpeed > 1f)
         {
-            selectedCamera.position = Vector3.SmoothDamp(selectedCamera.position, head.transform.position + new Vector3(0, 0.2f, 0), ref itemVelocity, 0.15f);
+            selectedCamera.position = Vector3.SmoothDamp(selectedCamera.position, head.transform.position + new Vector3(0, 0.2f, 0), ref itemVelocity, isSprintKeyPressed ? 0.1f : 0.15f);
             if(((head.transform.position + new Vector3(0, 0.2f, 0)) - selectedCamera.position).y < 0.1f)
             {
                 stepState = 2;
@@ -96,7 +100,7 @@ public class Player : MonoBehaviour
         }
         if(stepState == 2  && isGrounded &&  currentSpeed > 1)
         {
-            selectedCamera.position = Vector3.SmoothDamp(selectedCamera.position, head.transform.position - new Vector3(0, 0.2f, 0), ref itemVelocity, 0.15f);
+            selectedCamera.position = Vector3.SmoothDamp(selectedCamera.position, head.transform.position - new Vector3(0, 0.2f, 0), ref itemVelocity, isSprintKeyPressed ? 0.1f : 0.15f);
             if((selectedCamera.position - (head.transform.position - new Vector3(0, 0.2f, 0))).y < 0.1f)
             {
                 stepState = 1;
@@ -178,6 +182,7 @@ public class Player : MonoBehaviour
         {
             head.localPosition = Vector3.Lerp(head.localPosition, settedHeadPos, Time.deltaTime * 8);
         }
+        //print("LEFT: " + LHitemID + " RIGHT: " + RHitemID);
     }
 
     void FixedUpdate()
@@ -237,6 +242,7 @@ public class Player : MonoBehaviour
                 isCrouching = true;
                 GetComponent<CapsuleCollider>().height = GetComponent<CapsuleCollider>().height/2;
                 settedHeadPos = new Vector3(head.localPosition.x, head.localPosition.y - 0.5f, head.localPosition.z);
+                movementSpeed = movementSpeed/2;
                 break;
             }
             case true:
@@ -247,6 +253,7 @@ public class Player : MonoBehaviour
                     isCrouching = false;
                     settedHeadPos = new Vector3(head.localPosition.x, head.localPosition.y + 0.5f, head.localPosition.z);
                     GetComponent<CapsuleCollider>().height = GetComponent<CapsuleCollider>().height*2;
+                    movementSpeed = movementSpeed*2;
                 }
                 break;
             }
@@ -275,6 +282,7 @@ public class Player : MonoBehaviour
     }
     public void TakeItemInLeftHand(int id)
     {
+        print(id);
         if(inventory.Count < id + 1) return;
         Destroy(LeftHandItem);
         LeftHandItem = Instantiate(inventory[id].model, transform.position, Quaternion.Euler(new Vector3(0,0,0)));
@@ -287,10 +295,13 @@ public class Player : MonoBehaviour
                 LeftHandItem.transform.GetChild(i).gameObject.layer = 6;
             }
         }
-        if(RightHandItem != null )
+        if(RightHandItem != null)
         {
             if(RightHandItem.GetComponent<item>().twoHanded == true)
-            Destroy(RightHandItem);
+            {
+                Destroy(RightHandItem);
+                RHitemID = -1;
+            }
         }
 
         Destroy(LeftHandItem.GetComponent<Rigidbody>());
@@ -300,13 +311,17 @@ public class Player : MonoBehaviour
         if(id == RHitemID)
         {
             Destroy(RightHandItem);
+            RHitemID = -1;
         }
-        LHitemID = (byte)id;
+        LHitemID = (short)id;
 
         if(RightHandItem != null)
         {
             if(LeftHandItem.GetComponent<item>().twoHanded == true)
-            Destroy(RightHandItem);
+            {
+                Destroy(RightHandItem);
+                RHitemID = -1;
+            }
         }
     }
     public void TakeItemInRightHand(int id)
@@ -316,6 +331,7 @@ public class Player : MonoBehaviour
         RightHandItem = Instantiate(inventory[id].model, transform.position, Quaternion.Euler(new Vector3(0,0,0)));
         RightHandItem.SetActive(true);
         RightHandItem.layer = 6;
+
         if(RightHandItem.transform.childCount != 0)
         {
             for(int i = 0; i < RightHandItem.transform.childCount; i++)
@@ -328,22 +344,39 @@ public class Player : MonoBehaviour
         if(LeftHandItem != null)
         {
             if(LeftHandItem.GetComponent<item>().twoHanded == true)
-            Destroy(LeftHandItem);
+            {
+                Destroy(LeftHandItem);
+                LHitemID = -1;
+            }
         }
 
         Destroy(RightHandItem.GetComponent<Rigidbody>());
         RightHandItem.GetComponent<Collider>().enabled = false;
         RightHandItem.GetComponent<item>().currentHand = 2;
         RightHandItem.GetComponent<item>().supplyCount = inventory[id].supplyCount;
+        print(id + " - " + LHitemID);
         if(id == LHitemID)
         {
+            LHitemID = -1;
             Destroy(LeftHandItem);
         }
-        RHitemID = (byte)id;
+        RHitemID = (short)id;
         if(LeftHandItem != null)
         {
             if(RightHandItem.GetComponent<item>().twoHanded == true)
-            Destroy(LeftHandItem);
+            {
+                Destroy(LeftHandItem);
+                LHitemID = -1;
+            }
         }
     }
+    public void remapItemsId()
+    {
+        for(int i = 0; i < inventory.Count; i++)
+        {
+            print(i);
+            RightHandItem.transform.GetChild(i).gameObject.layer = 6;
+        }
+    }
+
 }

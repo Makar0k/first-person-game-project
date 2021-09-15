@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class pistol : MonoBehaviour
+public class Shotgun : MonoBehaviour
 {
     public float damage;
     Player player;
@@ -14,6 +14,7 @@ public class pistol : MonoBehaviour
     float reloadTimer;
     public float reloadTime = 1.5f;
     bool isShooting;
+    public GameObject debug;
     void Start()
     {
         player = GameObject.Find("Player").GetComponent<Player>();
@@ -73,7 +74,7 @@ public class pistol : MonoBehaviour
                     _animator.SetBool("isShooting", true);
                     player.inventory[itemID].supplyCount -= 1f;
                     isShooting = true;
-                    transform.position -= transform.forward * 0.07f;
+                    transform.position -= transform.forward * 0.5f;
                     ShootFromCamera();
                 }
             }
@@ -94,7 +95,7 @@ public class pistol : MonoBehaviour
                     _animator.SetBool("isShooting", true);
                     player.inventory[itemID].supplyCount -= 1f;
                     isShooting = true;
-                    transform.position -= transform.forward * 0.27f;
+                    transform.position += transform.up * 0.5f;
                     ShootFromCamera();
                 }
             }
@@ -103,21 +104,30 @@ public class pistol : MonoBehaviour
 
     public void shootIsDone()
     {
-        isShooting = false;
         fire.SetActive(false);
+        itemComponent.AdditionalRotation.x += 25f;
+    }
+    public void reloadIsDone()
+    {
+        isShooting = false;
+        itemComponent.AdditionalRotation.x -= 25f;
+        fire.SetActive(false);
+        
         _animator.SetBool("isShooting", false);
     }
-    
+
     public void ShootFromCamera()
     {
         Ray ray = Camera.main.ScreenPointToRay(player.crosshair.position);
         RaycastHit hit;
         if(Physics.Raycast(ray, out hit))
         {
-            if(hit.transform.GetComponent<Rigidbody>() != null)
+            //Instantiate(debug, hit.point, Camera.main.transform.rotation);
+            if(hit.transform.GetComponent<Rigidbody>() != null && hit.transform.gameObject.tag != "Player")
             {
-                hit.transform.GetComponent<Rigidbody>().AddForceAtPosition(10 * damage * (-Camera.main.transform.position + hit.transform.position).normalized, hit.point);
+                hit.transform.GetComponent<Rigidbody>().AddForceAtPosition(10 * damage * (-Camera.main.transform.position + hit.transform.position).normalized, hit.point);          
             }
         }
     }
 }
+
