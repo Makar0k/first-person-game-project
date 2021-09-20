@@ -140,22 +140,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2143f637ff5ec3a4092ff4a9a8490945, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  batteryHarm: 0.07
-  reloadTime: 1
---- !u!114 &3843031
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3843029}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 439432b763a6afc468deb27e6b47aee2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _name: Weak Flashlight
-  description: A flashlight, with big battery expense
+  _name: Weak flashlight
+  description: A flashlight with high energy harm
   model: {fileID: 3843029}
   icon: {fileID: 21300000, guid: c3e45a2ac652115409775163272bd587, type: 3}
   AdditionalRotation: {x: 0, y: 0, z: 0}
@@ -168,6 +154,8 @@ MonoBehaviour:
   twoHanded: 0
   specialRamp: {fileID: 0}
   showAdditionalInfo: 1
+  batteryHarm: 0.07
+  reloadTime: 1
 --- !u!4 &3843034 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: b185d95a03659d84c92c54fa7d1d3dc9, type: 3}
@@ -893,7 +881,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh86492
+  m_Name: pb_Mesh16134
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2
@@ -1690,7 +1678,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh86636
+  m_Name: pb_Mesh16344
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2
@@ -3304,7 +3292,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh86594
+  m_Name: pb_Mesh16300
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2
@@ -5504,7 +5492,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh86922
+  m_Name: pb_Mesh16794
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2
@@ -8140,7 +8128,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh87328
+  m_Name: pb_Mesh17460
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2
@@ -12724,32 +12712,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &992380987
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 992380982}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 439432b763a6afc468deb27e6b47aee2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _name: Pistol
-  description: A glock a quess...fwwwwwwwwwwwwwwwwwwwwwwwwwww
-  model: {fileID: 992380982}
-  icon: {fileID: 21300000, guid: f15ccd4c54219454badfba63664f1d28, type: 3}
-  AdditionalRotation: {x: 90, y: -90, z: 0}
-  AdditionalLocalPos: {x: 0, y: 0, z: 0}
-  supplyCount: 6
-  maxSupplyCount: 6
-  currentHand: 0
-  ammoType: 1
-  isReloading: 0
-  twoHanded: 0
-  specialRamp: {fileID: 0}
-  showAdditionalInfo: 1
 --- !u!114 &992380988
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -12762,9 +12724,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 556a8e7b67fc7f74986cd43d20c62d9b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  damage: 3
+  _name: Glock-18
+  description: A pistol with some kind of dirt on it
+  model: {fileID: 992380982}
+  icon: {fileID: 21300000, guid: f15ccd4c54219454badfba63664f1d28, type: 3}
+  AdditionalRotation: {x: 90, y: -90, z: 0}
+  AdditionalLocalPos: {x: 0, y: 0, z: 0}
+  supplyCount: 10
+  maxSupplyCount: 10
+  currentHand: 0
+  ammoType: 1
+  isReloading: 0
+  twoHanded: 0
+  specialRamp: {fileID: 0}
+  showAdditionalInfo: 1
+  damage: 4
   fire: {fileID: 715789583}
   reloadTime: 1.5
+  debug: {fileID: 0}
 --- !u!1 &1000607382
 GameObject:
   m_ObjectHideFlags: 0
@@ -12850,7 +12827,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh87228
+  m_Name: pb_Mesh17348
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2
@@ -16055,7 +16032,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh87116
+  m_Name: pb_Mesh17104
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2
@@ -25268,7 +25245,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh87394
+  m_Name: pb_Mesh17532
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2
@@ -28497,7 +28474,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: -8679921383154817045, guid: 2ca9267647d3b514c9d1275d6be291b0, type: 3}
       propertyPath: m_RootOrder
-      value: 4
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 2ca9267647d3b514c9d1275d6be291b0, type: 3}
       propertyPath: m_LocalScale.x
@@ -31608,32 +31585,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &1972124779
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1972124772}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 439432b763a6afc468deb27e6b47aee2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _name: Shotgun
-  description: wfwfwfwf
-  model: {fileID: 1972124772}
-  icon: {fileID: 21300000, guid: 3cfef879888846f4896d603e4779881c, type: 3}
-  AdditionalRotation: {x: 0, y: 180, z: 0}
-  AdditionalLocalPos: {x: 0, y: 0.37, z: 1.4}
-  supplyCount: 2
-  maxSupplyCount: 6
-  currentHand: 0
-  ammoType: 2
-  isReloading: 0
-  twoHanded: 1
-  specialRamp: {fileID: 21300000, guid: 397cbe4cd218d8b41aee28902cd71e72, type: 3}
-  showAdditionalInfo: 1
 --- !u!114 &1972124780
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -31646,6 +31597,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 67afdef76ff7112468e251c177e7f5de, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _name: Shotgun
+  description: A shotgun
+  model: {fileID: 1972124772}
+  icon: {fileID: 21300000, guid: 3cfef879888846f4896d603e4779881c, type: 3}
+  AdditionalRotation: {x: 0, y: -180, z: 0}
+  AdditionalLocalPos: {x: 0, y: 0, z: 2.75}
+  supplyCount: 5
+  maxSupplyCount: 6
+  currentHand: 0
+  ammoType: 2
+  isReloading: 0
+  twoHanded: 1
+  specialRamp: {fileID: 21300000, guid: 397cbe4cd218d8b41aee28902cd71e72, type: 3}
+  showAdditionalInfo: 1
   damage: 20
   fire: {fileID: 402829188}
   reloadTime: 1.5
@@ -32596,7 +32561,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh86992
+  m_Name: pb_Mesh16874
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2
@@ -33568,7 +33533,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh86424
+  m_Name: pb_Mesh16062
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2

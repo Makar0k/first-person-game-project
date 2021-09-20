@@ -2,13 +2,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class flashlight : MonoBehaviour
+public class flashlight : item
 {
     public float batteryHarm = 0.005f;
     bool isFLTurnedOn = false;
     Transform _light;
     Player player;
-    int currentHand;
     int itemID;
     public float reloadTime = 5f;
     float reloadTimer;
@@ -39,10 +38,10 @@ public class flashlight : MonoBehaviour
         }
 
         // When reload timer is done
-        if(itemComponent.isReloading && reloadTimer <= 0)
+        if(isReloading && reloadTimer <= 0)
         {
-            itemComponent.isReloading = false;
-            player.ammo[itemComponent.ammoType] -= 1;
+            isReloading = false;
+            player.ammo[ammoType] -= 1;
             player.inventory[itemID].supplyCount = 100f;
         }
 
@@ -60,10 +59,10 @@ public class flashlight : MonoBehaviour
                     isFLTurnedOn = false;
                     _light.gameObject.SetActive(false);
                 }
-                if(player.inventory[itemID].supplyCount <= 0 && player.ammo[player.inventory[itemID].ammoType] > 0 && !itemComponent.isReloading)
+                if(player.inventory[itemID].supplyCount <= 0 && player.ammo[player.inventory[itemID].ammoType] > 0 && !isReloading)
                 {
                     reloadTimer = reloadTime;
-                    itemComponent.isReloading = true;
+                    isReloading = true;
                 }
             }
         }
@@ -81,10 +80,10 @@ public class flashlight : MonoBehaviour
                     isFLTurnedOn = false;
                     _light.gameObject.SetActive(false);
                 }
-                if(player.inventory[itemID].supplyCount <= 0 && player.ammo[player.inventory[itemID].ammoType] > 0 && !itemComponent.isReloading)
+                if(player.inventory[itemID].supplyCount <= 0 && player.ammo[player.inventory[itemID].ammoType] > 0 && !isReloading)
                 {
                     reloadTimer = reloadTime;
-                    itemComponent.isReloading = true;
+                    isReloading = true;
                 }
             }
         }
