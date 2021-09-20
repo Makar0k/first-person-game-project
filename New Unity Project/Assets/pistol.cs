@@ -116,7 +116,31 @@ public class pistol : MonoBehaviour
         {
             if(hit.transform.GetComponent<Rigidbody>() != null)
             {
-                hit.transform.GetComponent<Rigidbody>().AddForceAtPosition(10 * damage * (-Camera.main.transform.position + hit.transform.position).normalized, hit.point);
+                hit.transform.GetComponent<Rigidbody>().AddForceAtPosition(20 * damage * (-Camera.main.transform.position + hit.transform.position).normalized, hit.point);
+            }
+            if(hit.transform.gameObject.tag == "enemy")
+            {
+                dummy Enemy =  hit.transform.root.GetComponent<dummy>();
+                if(hit.transform.name == "head")
+                {    
+                    Enemy.damaged += damage;
+                    Enemy.health -= damage;
+                }
+
+                Enemy.damaged += damage;
+                if(Enemy.damaged >= Enemy.stunDamage)
+                {
+                    Enemy.TurnRagdoll(true);
+                    Enemy.stunTimer = Enemy.stunTime;
+                    Enemy.damaged = 0;
+                }
+                
+                Enemy.health -= damage;
+                if(Enemy.health <= 0)
+                {
+                    Enemy.TurnRagdoll(true);
+                }
+                hit.transform.GetComponent<Rigidbody>().AddForceAtPosition(100 * damage * (-Camera.main.transform.position + hit.transform.position).normalized, hit.point);
             }
         }
     }

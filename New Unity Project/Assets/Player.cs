@@ -336,7 +336,6 @@ public class Player : MonoBehaviour
         {
             for(int i = 0; i < RightHandItem.transform.childCount; i++)
             {
-                print(i);
                 RightHandItem.transform.GetChild(i).gameObject.layer = 6;
             }
         }
@@ -354,7 +353,6 @@ public class Player : MonoBehaviour
         RightHandItem.GetComponent<Collider>().enabled = false;
         RightHandItem.GetComponent<item>().currentHand = 2;
         RightHandItem.GetComponent<item>().supplyCount = inventory[id].supplyCount;
-        print(id + " - " + LHitemID);
         if(id == LHitemID)
         {
             LHitemID = -1;
