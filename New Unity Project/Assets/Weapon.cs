@@ -127,11 +127,16 @@ abstract public class Weapon : item
             }
             if(hit.transform.gameObject.tag == "enemy")
             {
-                dummy Enemy =  hit.transform.root.GetComponent<dummy>();
+                enemyAI Enemy =  hit.transform.root.GetComponent<enemyAI>();
                 if(hit.transform.name == "head")
                 {    
                     Enemy.damaged += damage;
                     Enemy.health -= damage;
+                }     
+                if(hit.transform.name == "leg")
+                {    
+                    Enemy.damaged += damage * 2;
+                    Enemy.health += damage/2;
                 }
 
                 Enemy.damaged += damage;

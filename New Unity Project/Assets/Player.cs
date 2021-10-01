@@ -147,7 +147,7 @@ public class Player : MonoBehaviour
         {
             if(cameraHit.transform.gameObject.tag == "item")
             {
-                if(Input.GetKey("f"))
+                if(Input.GetKeyDown("f"))
                 {
                     inventory.Add(cameraHit.transform.GetComponent<item>());
                     cameraHit.transform.gameObject.SetActive(false);

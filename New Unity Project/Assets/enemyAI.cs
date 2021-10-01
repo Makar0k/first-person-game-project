@@ -2,9 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class dummy : MonoBehaviour
+public abstract class enemyAI : MonoBehaviour
 {
-    UnityEngine.AI.NavMeshAgent agent;
+    protected UnityEngine.AI.NavMeshAgent agent;
     public Transform target;
     Animator animator;
     private Vector3 previousPosition;
@@ -15,7 +15,8 @@ public class dummy : MonoBehaviour
     [HideInInspector] public float stunTimer = 0f;
     public float stunDamage = 20f;
     public float damaged = 0;
-    void Start()
+
+    protected void Start()
     {
         agent = GetComponent<UnityEngine.AI.NavMeshAgent>();
         animator = transform.GetChild(0).GetComponent<Animator>();
@@ -26,7 +27,7 @@ public class dummy : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
+    protected void Update()
     {
         // Stun
         if(stunTimer > 0)
@@ -48,18 +49,6 @@ public class dummy : MonoBehaviour
         if(!isRagdoll && stunTimer <= 0)
             agent.destination = target.position;
         
-        //Debug
-        if(Input.GetKey("r"))
-        {
-            health = 0;
-            TurnRagdoll(true);
-        }
-        if(Input.GetKey("t"))
-        {
-            health = 40f;
-            GetComponent<dummy>().enabled = true;
-            TurnRagdoll(false);
-        }
         // Death
         if(this.enabled && health <= 0)
         {
@@ -67,7 +56,7 @@ public class dummy : MonoBehaviour
             this.enabled = false;
         }
     }
-    public void TurnRagdoll(bool a)
+    public virtual void TurnRagdoll(bool a)
     {
         if(a)
         {
@@ -93,7 +82,8 @@ public class dummy : MonoBehaviour
             isRagdoll = false;
         }
     }
-    public void WakeUp()
+    
+    public virtual void WakeUp()
     {
         TurnRagdoll(false);
         animator.SetBool("isWaking", true);
