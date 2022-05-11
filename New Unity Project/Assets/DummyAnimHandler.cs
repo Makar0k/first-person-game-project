@@ -12,13 +12,12 @@ public class DummyAnimHandler : MonoBehaviour
 
     void WokeUp()
     {
-        transform.parent.GetComponent<UnityEngine.AI.NavMeshAgent>().speed = 3.5f;
+        transform.GetComponent<UnityEngine.AI.NavMeshAgent>().speed = transform.GetComponent<enemyAI>().speed;;
         GetComponent<Animator>().SetBool("isWaking", false);
-        transform.parent.position -= new Vector3(0,0.3f,0);
     }
     void WakeUpStart()
     {
-        transform.parent.position += new Vector3(0,0.3f,0);
+        transform.GetComponent<UnityEngine.AI.NavMeshAgent>().speed = 0f;
         GetComponent<Animator>().SetBool("isWaking", false);
     }
 }

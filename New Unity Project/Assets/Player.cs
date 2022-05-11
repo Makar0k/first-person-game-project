@@ -63,12 +63,12 @@ public class Player : MonoBehaviour
     void LateUpdate()
     {   
         // Rotation is changing in LateUpdate to avoid Animator rotation change
-        if(RightHandItem != null)
+        if(RightHandItem != null && RHitemID != -1)
         {
             RightHandItem.transform.rotation = Quaternion.Lerp(RightHandItem.transform.rotation, rightHand.rotation * Quaternion.Euler(RightHandItem.GetComponent<item>().AdditionalRotation), Time.deltaTime * 40);
             //RightHandItem.transform.rotation += Quaternion.Euler(RightHandItem.GetComponent<item>().AdditionalRotation);
         }
-        if(LeftHandItem != null)
+        if(LeftHandItem != null && LHitemID != -1)
         {
             LeftHandItem.transform.rotation = Quaternion.Lerp(LeftHandItem.transform.rotation, leftHand.rotation * Quaternion.Euler(LeftHandItem.GetComponent<item>().AdditionalRotation), Time.deltaTime * 40);
             //LeftHandItem.transform.rotation =  leftHand.rotation;
@@ -118,7 +118,7 @@ public class Player : MonoBehaviour
 
         // Items
 
-        if(RightHandItem != null)
+        if(RightHandItem != null && RHitemID != -1)
         {
             if(RightHandItem.GetComponent<item>().isReloading)
             {
@@ -129,7 +129,7 @@ public class Player : MonoBehaviour
                 RightHandItem.transform.position = Vector3.Lerp(RightHandItem.transform.position, rightHand.transform.TransformPoint(RightHandItem.GetComponent<item>().AdditionalLocalPos), Time.deltaTime/Time.fixedDeltaTime);
             }
         }
-        if(LeftHandItem != null)
+        if(LeftHandItem != null && LHitemID != -1)
         {
             if(LeftHandItem.GetComponent<item>().isReloading)
             {
@@ -143,27 +143,38 @@ public class Player : MonoBehaviour
 
         //head.rotation = selectedCamera.rotation; //Head - The object, to which camera is connected but without parenting it
 
-        if(Physics.Raycast(selectedCamera.transform.position, selectedCamera.transform.forward, out cameraHit, 20f, cameraMask))
+        if(Input.GetKeyDown("f"))
         {
-            if(cameraHit.transform.gameObject.tag == "item")
+            if(Physics.Raycast(selectedCamera.transform.position, selectedCamera.transform.forward, out cameraHit, 5f, cameraMask))
             {
-                if(Input.GetKeyDown("f"))
+                switch(cameraHit.transform.gameObject.tag)
                 {
-                    inventory.Add(cameraHit.transform.GetComponent<item>());
-                    cameraHit.transform.gameObject.SetActive(false);
-                }
-            }
-            if(cameraHit.transform.gameObject.tag == "ammo")
-            {
-                if(Input.GetKey("f"))
-                {
-                    ammoPack _ammo = cameraHit.transform.GetComponent<ammoPack>();
-                    ammo[_ammo.ammoType] += _ammo.ammoCount;
-                    Destroy(cameraHit.transform.gameObject);
+                    case "item":
+                    {
+                        inventory.Add(cameraHit.transform.GetComponent<item>());
+                        cameraHit.transform.gameObject.SetActive(false);
+                        break;
+                    }
+                    case "ammo":
+                    {
+                        ammoPack _ammo = cameraHit.transform.GetComponent<ammoPack>();
+                        ammo[_ammo.ammoType] += _ammo.ammoCount;
+                        Destroy(cameraHit.transform.gameObject);
+                        break;
+                    }
+                    case "door":
+                    {
+                        cameraHit.transform.GetComponent<door>().Interact();
+                        break;
+                    }
+                    case "teleport":
+                    {
+                        cameraHit.transform.GetComponent<teleport>().TeleportPlayer(transform);
+                        break;
+                    }
                 }
             }
         }
-
         if(Input.GetKeyDown("c"))
         {
             StandPlayerUp(isCrouching);
@@ -213,7 +224,7 @@ public class Player : MonoBehaviour
             gravityMultiplier = 2f * Time.fixedDeltaTime;
             jumpVelocity -= gravity * gravityMultiplier;    
         }
-        rb.velocity = new Vector3(0, jumpVelocity, 0);
+        rb.velocity = new Vector3(rb.velocity.x, jumpVelocity, rb.velocity.z);
 
         Vector3 movementForce = new Vector3(Input.GetAxis("Horizontal") * (isSprintKeyPressed ? sprintSpeed : movementSpeed), rb.velocity.y, Input.GetAxis("Vertical") * (isSprintKeyPressed ? sprintSpeed : movementSpeed));
         rb.velocity = transform.TransformDirection(movementForce);
@@ -282,12 +293,12 @@ public class Player : MonoBehaviour
     }
     public void TakeItemInLeftHand(int id)
     {
-        print(id);
         if(inventory.Count < id + 1) return;
         Destroy(LeftHandItem);
         LeftHandItem = Instantiate(inventory[id].model, transform.position, Quaternion.Euler(new Vector3(0,0,0)));
         LeftHandItem.SetActive(true);
         LeftHandItem.layer = 6;
+        var lhItem = LeftHandItem.GetComponent<item>();
         if(LeftHandItem.transform.childCount != 0)
         {
             for(int i = 0; i > LeftHandItem.transform.childCount; i++)
@@ -306,8 +317,8 @@ public class Player : MonoBehaviour
 
         Destroy(LeftHandItem.GetComponent<Rigidbody>());
         LeftHandItem.GetComponent<Collider>().enabled = false;
-        LeftHandItem.GetComponent<item>().currentHand = 1;
-        LeftHandItem.GetComponent<item>().supplyCount = inventory[id].supplyCount;
+        lhItem.currentHand = 1;
+        lhItem.supplyCount = inventory[id].supplyCount;
         if(id == RHitemID)
         {
             Destroy(RightHandItem);
@@ -317,7 +328,7 @@ public class Player : MonoBehaviour
 
         if(RightHandItem != null)
         {
-            if(LeftHandItem.GetComponent<item>().twoHanded == true)
+            if(lhItem.twoHanded == true)
             {
                 Destroy(RightHandItem);
                 RHitemID = -1;
@@ -331,6 +342,7 @@ public class Player : MonoBehaviour
         RightHandItem = Instantiate(inventory[id].model, transform.position, Quaternion.Euler(new Vector3(0,0,0)));
         RightHandItem.SetActive(true);
         RightHandItem.layer = 6;
+        var rItem = RightHandItem.GetComponent<item>();
 
         if(RightHandItem.transform.childCount != 0)
         {
@@ -351,8 +363,8 @@ public class Player : MonoBehaviour
 
         Destroy(RightHandItem.GetComponent<Rigidbody>());
         RightHandItem.GetComponent<Collider>().enabled = false;
-        RightHandItem.GetComponent<item>().currentHand = 2;
-        RightHandItem.GetComponent<item>().supplyCount = inventory[id].supplyCount;
+        rItem.currentHand = 2;
+        rItem.supplyCount = inventory[id].supplyCount;
         if(id == LHitemID)
         {
             LHitemID = -1;
@@ -361,7 +373,7 @@ public class Player : MonoBehaviour
         RHitemID = (short)id;
         if(LeftHandItem != null)
         {
-            if(RightHandItem.GetComponent<item>().twoHanded == true)
+            if(rItem.twoHanded == true)
             {
                 Destroy(LeftHandItem);
                 LHitemID = -1;

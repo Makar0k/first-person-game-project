@@ -100,6 +100,11 @@ abstract public class Weapon : item
         transform.position -= transform.forward * 0.5f;
         AdditionalRotation.x += 25f;
     }
+    public virtual void Shake(float shakePos, float rotation)
+    {
+        transform.position -= transform.forward * shakePos;
+        AdditionalRotation.x += rotation;
+    }
 
     public void reloadIsDone()
     {
@@ -119,7 +124,7 @@ abstract public class Weapon : item
         isShooting = true;
         Ray ray = Camera.main.ScreenPointToRay(player.crosshair.position);
         RaycastHit hit;
-        if(Physics.Raycast(ray, out hit))
+        if(Physics.Raycast(ray, out hit, 100f, ~LayerMask.GetMask("Player")))
         {
             if(hit.transform.GetComponent<Rigidbody>() != null && hit.transform.gameObject.tag != "Player")
             {
@@ -128,17 +133,6 @@ abstract public class Weapon : item
             if(hit.transform.gameObject.tag == "enemy")
             {
                 enemyAI Enemy =  hit.transform.root.GetComponent<enemyAI>();
-                if(hit.transform.name == "head")
-                {    
-                    Enemy.damaged += damage;
-                    Enemy.health -= damage;
-                }     
-                if(hit.transform.name == "leg")
-                {    
-                    Enemy.damaged += damage * 2;
-                    Enemy.health += damage/2;
-                }
-
                 Enemy.damaged += damage;
                 if(Enemy.damaged >= Enemy.stunDamage)
                 {

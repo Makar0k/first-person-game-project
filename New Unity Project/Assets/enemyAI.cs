@@ -8,6 +8,7 @@ public abstract class enemyAI : MonoBehaviour
     public Transform target;
     Animator animator;
     private Vector3 previousPosition;
+    public float speed = 2f;
     public float curSpeed;
     public bool isRagdoll;
     public float stunTime = 2f;
@@ -15,15 +16,18 @@ public abstract class enemyAI : MonoBehaviour
     [HideInInspector] public float stunTimer = 0f;
     public float stunDamage = 20f;
     public float damaged = 0;
+    public Transform model;
+    public Transform pelvis;
+    Rigidbody ragdollRb;
 
     protected void Start()
     {
+        ragdollRb = pelvis.GetComponent<Rigidbody>();
         agent = GetComponent<UnityEngine.AI.NavMeshAgent>();
-        animator = transform.GetChild(0).GetComponent<Animator>();
+        animator = model.GetComponent<Animator>();
         animator.enabled = true;
         TurnRagdoll(false);
-        transform.GetChild(0).position = transform.position;
-        transform.GetChild(0).position -= new Vector3(0, 0.3f, 0); 
+        agent.speed = speed;
     }
 
     // Update is called once per frame
@@ -32,7 +36,10 @@ public abstract class enemyAI : MonoBehaviour
         // Stun
         if(stunTimer > 0)
         {
-            stunTimer -= Time.deltaTime * 2;
+            if(ragdollRb.velocity.magnitude < 0.2f)
+            {
+                stunTimer -= Time.deltaTime * 2;
+            }
         }
         else if(isRagdoll == true && health > 0)
         {
@@ -67,26 +74,25 @@ public abstract class enemyAI : MonoBehaviour
             animator.enabled = false;
             agent.enabled = false;
             isRagdoll = true;
+            agent.enabled = false;
         }
         else
         {
-            transform.position = transform.GetChild(0).GetChild(0).GetChild(0).position;
             foreach (Rigidbody rb in GetComponentsInChildren<Rigidbody>())
             {
                 rb.isKinematic = !a;
             }
             animator.enabled = true;
             agent.enabled = true;
-            transform.GetChild(0).position = transform.position;
-            transform.GetChild(0).position -= new Vector3(0, 0.3f, 0);
             isRagdoll = false;
         }
     }
     
     public virtual void WakeUp()
     {
-        TurnRagdoll(false);
+        transform.position = pelvis.position;
         animator.SetBool("isWaking", true);
+        TurnRagdoll(false);
         agent.speed = 0;
     }
 }

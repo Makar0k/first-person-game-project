@@ -16,14 +16,14 @@ public class dumdass : enemyAI
     void Start()
     {
         base.Start();
+        pTimer = patrolWaitTime;
     }
 
     void Update()
     {
-        if(isPatrol)
+        if(isPatrol && !isRagdoll)
         {
             target = waypoints[curWaypoint];
-            print(curWaypoint);
             if(agent.remainingDistance <= 0.1f)
             {
                 pTimer -= Time.deltaTime;
@@ -46,20 +46,20 @@ public class dumdass : enemyAI
                 pTimer = patrolWaitTime;
             }
         }
-
-
-        Debug.DrawRay(transform.position, searchTarget.position - transform.position, Color.red);
         if(Vector3.Distance(transform.position, searchTarget.position) < distanceToAnger && Vector3.Dot(searchTarget.position - transform.position, transform.forward) > 0)
         {
             if(Physics.Raycast(transform.position, searchTarget.position - transform.position, out hit, distanceToAnger + 1f))
             {
-                print(hit.transform);
                 if(hit.transform == searchTarget)
                 {
                     isPatrol = false;
                     target = searchTarget;
                 }
             }
+        }
+        if(isPatrol && !isRagdoll) 
+        {
+            agent.destination = target.position; 
         }
         base.Update();
     }
