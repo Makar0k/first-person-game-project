@@ -6,10 +6,7 @@ public class Player : MonoBehaviour
 {
     Rigidbody rb;
     public float jumpForce = 20f;
-    [SerializeField] protected float maxHealth = 150f;
-    [SerializeField] protected float currentHealth = 100f;
-
-    [SerializeField] private Transform selectedCamera;
+    public Transform selectedCamera;
     public Transform head;
     public Transform rightHand;
     public Transform leftHand;
@@ -24,12 +21,12 @@ public class Player : MonoBehaviour
     bool isCrouching = false;
 
     [Header("Stairs stepping")]
-    [SerializeField] private float lowerStairRayHeight = 0.1f;
-    [SerializeField] private float upperStairRayHeight = 0.5f;
-    [SerializeField] private float lowerStairRayDist= 0.3f;
-    [SerializeField] private float upperStairRayDist = 0.3f;
-    [SerializeField] private float stepHeight = 0.3f;
-    [SerializeField] private bool isGrounded;
+    public float lowerStairRayHeight = 0.1f;
+    public float upperStairRayHeight = 0.5f;
+    public float lowerStairRayDist= 0.3f;
+    public float upperStairRayDist = 0.3f;
+    public float stepHeight = 0.3f;
+    bool isGrounded;
     CapsuleCollider mainCollider;
     Vector3 settedHeadPos;
     bool isSprintKeyPressed;
@@ -50,8 +47,6 @@ public class Player : MonoBehaviour
     int stepState = 1;
     float currentSpeed;
     public Transform crosshair;
-    [SerializeField] protected GameObject HealthUI;
-    private UnityEngine.UI.Slider HealthUiComponent;
 
     void Start()
     {
@@ -63,7 +58,7 @@ public class Player : MonoBehaviour
         rb = GetComponent<Rigidbody>();
         mainCollider = GetComponent<CapsuleCollider>();
         settedHeadPos = head.localPosition;
-        HealthUiComponent = HealthUI.GetComponent<UnityEngine.UI.Slider>();
+
     }
     void LateUpdate()
     {   
@@ -71,15 +66,17 @@ public class Player : MonoBehaviour
         if(RightHandItem != null && RHitemID != -1)
         {
             RightHandItem.transform.rotation = Quaternion.Lerp(RightHandItem.transform.rotation, rightHand.rotation * Quaternion.Euler(RightHandItem.GetComponent<item>().AdditionalRotation), Time.deltaTime * 40);
+            //RightHandItem.transform.rotation += Quaternion.Euler(RightHandItem.GetComponent<item>().AdditionalRotation);
         }
         if(LeftHandItem != null && LHitemID != -1)
         {
             LeftHandItem.transform.rotation = Quaternion.Lerp(LeftHandItem.transform.rotation, leftHand.rotation * Quaternion.Euler(LeftHandItem.GetComponent<item>().AdditionalRotation), Time.deltaTime * 40);
+            //LeftHandItem.transform.rotation =  leftHand.rotation;
+            //LeftHandItem.transform.Rotate(LeftHandItem.GetComponent<item>().AdditionalRotation);
         }
     }
     void Update()
     {
-        HealthUiComponent.value = currentHealth/(maxHealth/100);
         currentSpeed = rb.velocity.magnitude;
         if(mouseLocked == false)
         {

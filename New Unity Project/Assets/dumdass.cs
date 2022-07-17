@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class dumdass : enemyAI, INavLinkHandler
+public class dumdass : enemyAI
 {
     public bool isPatrol;
     public float patrolWaitTime;
@@ -11,39 +11,12 @@ public class dumdass : enemyAI, INavLinkHandler
     public List<Transform> waypoints;
     public Transform searchTarget;
     public float distanceToAnger = 3f;
-    public AgentLinkMover agentMover;
-    protected float LinkEndTimerValue;
     RaycastHit hit;
     
     void Start()
     {
-        agentMover = GetComponent<AgentLinkMover>();
         base.Start();
         pTimer = patrolWaitTime;
-        agentMover.StartMove += LinkHandleStart;
-        agentMover.EndMove += LinkHandleEnd; 
-    }
-    public void LinkHandleStart()
-    {
-        print("Oh god he is jumping!");
-        ChangeMovementSpeed(0);
-    }
-    public void LinkHandleEnd()
-    {
-        StartCoroutine(StartLinkEndTimer(3f));
-    }
-
-    // Some StackOverflow Courotine Timer
-    public IEnumerator StartLinkEndTimer(float timerValue)
-    {
-        LinkEndTimerValue = timerValue;
-        while (LinkEndTimerValue > 0)
-        {
-            Debug.Log("Timer: " + LinkEndTimerValue);
-            yield return new WaitForSeconds(1.0f);
-            LinkEndTimerValue--;
-        }
-        ChangeMovementSpeed(speed);
     }
 
     void Update()
