@@ -63,6 +63,12 @@ public abstract class enemyAI : MonoBehaviour
             this.enabled = false;
         }
     }
+    public void ChangeMovementSpeed(float _speed)
+    {
+        curSpeed = _speed;
+        agent.speed = _speed;
+    }
+
     public virtual void TurnRagdoll(bool a)
     {
         if(a)
