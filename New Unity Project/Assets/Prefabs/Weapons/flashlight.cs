@@ -7,14 +7,12 @@ public class flashlight : item
     public float batteryHarm = 0.005f;
     bool isFLTurnedOn = false;
     Transform _light;
-    Player player;
     int itemID;
     public float reloadTime = 5f;
     float reloadTimer;
     item itemComponent;
     void Start()
     {
-        player = GameObject.Find("Player").GetComponent<Player>();
         _light = transform.GetChild(0);
         currentHand = GetComponent<item>().currentHand;
         itemComponent = GetComponent<item>();

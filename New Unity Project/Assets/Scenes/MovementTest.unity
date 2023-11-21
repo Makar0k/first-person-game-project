@@ -10406,6 +10406,17 @@ CapsuleCollider:
   m_Height: 0.7382685
   m_Direction: 1
   m_Center: {x: 0, y: 0.36913425, z: 0}
+--- !u!114 &632427422 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3986959193584544436, guid: 44561c7f968b48d419b0182f18b252e1, type: 3}
+  m_PrefabInstance: {fileID: 3986959192680542273}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4c5b04385afef44408e6638bbeb949b0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &703480945
 GameObject:
   m_ObjectHideFlags: 0
@@ -11015,6 +11026,7 @@ MonoBehaviour:
   - {fileID: 1024035326}
   searchTarget: {fileID: 1311120122}
   distanceToAnger: 0
+  agentMover: {fileID: 0}
 --- !u!195 &1148790653
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -11835,6 +11847,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: door
       objectReference: {fileID: 0}
+    - target: {fileID: 2283478813984594499, guid: a1bb3997a7bc2624d9edf85d5a7b1bf6, type: 3}
+      propertyPath: m_TagString
+      value: interactable
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a1bb3997a7bc2624d9edf85d5a7b1bf6, type: 3}
 --- !u!1001 &2528109806133730685
@@ -11892,6 +11908,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: glock1
       objectReference: {fileID: 0}
+    - target: {fileID: 3446607938745113785, guid: badac9494633fce4bb47ef04aaa3bdcd, type: 3}
+      propertyPath: m_TagString
+      value: interactable
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: badac9494633fce4bb47ef04aaa3bdcd, type: 3}
 --- !u!1001 &3134702076087100553
@@ -11905,6 +11925,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: shotgun
       objectReference: {fileID: 0}
+    - target: {fileID: 2828783107541361128, guid: 79fa11dc8f183b3499c3ee9af9c785ad, type: 3}
+      propertyPath: m_TagString
+      value: interactable
+      objectReference: {fileID: 0}
+    - target: {fileID: 3134702078007826661, guid: 79fa11dc8f183b3499c3ee9af9c785ad, type: 3}
+      propertyPath: player
+      value: 
+      objectReference: {fileID: 632427422}
     - target: {fileID: 3173361614314322770, guid: 79fa11dc8f183b3499c3ee9af9c785ad, type: 3}
       propertyPath: m_RootOrder
       value: 2
@@ -11958,6 +11986,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1884135490565244610, guid: 44561c7f968b48d419b0182f18b252e1, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3986959193022708034, guid: 44561c7f968b48d419b0182f18b252e1, type: 3}
       propertyPath: m_RootOrder
       value: 16
@@ -12006,6 +12038,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: EntirePlayer
       objectReference: {fileID: 0}
+    - target: {fileID: 8116432281642377380, guid: 44561c7f968b48d419b0182f18b252e1, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 44561c7f968b48d419b0182f18b252e1, type: 3}
 --- !u!1001 &4247970029573637758
@@ -12018,6 +12054,10 @@ PrefabInstance:
     - target: {fileID: 3905390457462110610, guid: de4b5a986d89bf246b1af390fe5951ca, type: 3}
       propertyPath: m_Name
       value: ammoBox
+      objectReference: {fileID: 0}
+    - target: {fileID: 3905390457462110610, guid: de4b5a986d89bf246b1af390fe5951ca, type: 3}
+      propertyPath: m_TagString
+      value: interactable
       objectReference: {fileID: 0}
     - target: {fileID: 4429689637367898920, guid: de4b5a986d89bf246b1af390fe5951ca, type: 3}
       propertyPath: m_RootOrder
@@ -12120,6 +12160,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: battery
       objectReference: {fileID: 0}
+    - target: {fileID: 4904021584594187007, guid: 913724af209b0ac4c874b17944e7c261, type: 3}
+      propertyPath: m_TagString
+      value: interactable
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 913724af209b0ac4c874b17944e7c261, type: 3}
 --- !u!1001 &5838444655806212897
@@ -12177,6 +12221,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: flashlight
       objectReference: {fileID: 0}
+    - target: {fileID: 6757435371038018112, guid: 9c552f1dcabefe1448cede9fbcf8a793, type: 3}
+      propertyPath: m_TagString
+      value: interactable
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 9c552f1dcabefe1448cede9fbcf8a793, type: 3}
 --- !u!1001 &7995558512569213002
@@ -12189,6 +12237,10 @@ PrefabInstance:
     - target: {fileID: 7076430220844655576, guid: c4415533ad518c140952ad72e485675d, type: 3}
       propertyPath: m_Name
       value: ammoBox (1)
+      objectReference: {fileID: 0}
+    - target: {fileID: 7076430220844655576, guid: c4415533ad518c140952ad72e485675d, type: 3}
+      propertyPath: m_TagString
+      value: interactable
       objectReference: {fileID: 0}
     - target: {fileID: 7601890798299822434, guid: c4415533ad518c140952ad72e485675d, type: 3}
       propertyPath: m_RootOrder

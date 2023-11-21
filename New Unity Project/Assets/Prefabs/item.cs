@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-abstract public class item : MonoBehaviour
+abstract public class item : Interactable
 {
     public string _name;
     public string description;
@@ -18,15 +18,9 @@ abstract public class item : MonoBehaviour
     public bool twoHanded = false;
     public Sprite specialRamp;
     public bool showAdditionalInfo = false;
-
-    void Start()
+    public override void Interact()
     {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
+        player.inventory.Add(transform.GetComponent<item>());
+        transform.gameObject.SetActive(false);
     }
 }

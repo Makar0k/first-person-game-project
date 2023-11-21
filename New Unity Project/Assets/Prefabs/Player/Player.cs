@@ -48,7 +48,7 @@ public class Player : MonoBehaviour
     private Vector3 itemVelocity = Vector3.zero; // Zero Velocity for camera smooth moving
     public byte[] ammo = new byte[3] { 0, 0, 0 }; //Ammo amount | 0 - Battery | 1 - Pistol | 2 - Shotgun
     int stepState = 1;
-    float currentSpeed;
+    private float currentSpeed;
     public Transform crosshair;
     [SerializeField] protected GameObject HealthUI;
     private UnityEngine.UI.Slider HealthUiComponent;
@@ -152,27 +152,9 @@ public class Player : MonoBehaviour
             {
                 switch(cameraHit.transform.gameObject.tag)
                 {
-                    case "item":
+                    case "interactable":
                     {
-                        inventory.Add(cameraHit.transform.GetComponent<item>());
-                        cameraHit.transform.gameObject.SetActive(false);
-                        break;
-                    }
-                    case "ammo":
-                    {
-                        ammoPack _ammo = cameraHit.transform.GetComponent<ammoPack>();
-                        ammo[_ammo.ammoType] += _ammo.ammoCount;
-                        Destroy(cameraHit.transform.gameObject);
-                        break;
-                    }
-                    case "door":
-                    {
-                        cameraHit.transform.GetComponent<door>().Interact();
-                        break;
-                    }
-                    case "teleport":
-                    {
-                        cameraHit.transform.GetComponent<teleport>().TeleportPlayer(transform);
+                        cameraHit.transform.GetComponent<Interactable>().Interact();
                         break;
                     }
                 }
@@ -296,9 +278,14 @@ public class Player : MonoBehaviour
     }
     public void TakeItemInLeftHand(int id)
     {
+        //Hide previous item
         if(inventory.Count < id + 1) return;
-        Destroy(LeftHandItem);
-        LeftHandItem = Instantiate(inventory[id].model, transform.position, Quaternion.Euler(new Vector3(0,0,0)));
+        if(LeftHandItem != null)
+        {
+            LeftHandItem.SetActive(false);
+        }
+
+        LeftHandItem = inventory[id].model;
         LeftHandItem.SetActive(true);
         LeftHandItem.layer = 6;
         var lhItem = LeftHandItem.GetComponent<item>();
@@ -309,22 +296,14 @@ public class Player : MonoBehaviour
                 LeftHandItem.transform.GetChild(i).gameObject.layer = 6;
             }
         }
-        if(RightHandItem != null)
-        {
-            if(RightHandItem.GetComponent<item>().twoHanded == true)
-            {
-                Destroy(RightHandItem);
-                RHitemID = -1;
-            }
-        }
-
-        Destroy(LeftHandItem.GetComponent<Rigidbody>());
+        LeftHandItem.GetComponent<Rigidbody>().isKinematic = true;
         LeftHandItem.GetComponent<Collider>().enabled = false;
         lhItem.currentHand = 1;
-        lhItem.supplyCount = inventory[id].supplyCount;
+
         if(id == RHitemID)
         {
-            Destroy(RightHandItem);
+            RightHandItem.SetActive(false);
+            RightHandItem = null;
             RHitemID = -1;
         }
         LHitemID = (short)id;
@@ -333,7 +312,14 @@ public class Player : MonoBehaviour
         {
             if(lhItem.twoHanded == true)
             {
-                Destroy(RightHandItem);
+                RightHandItem.SetActive(false);
+                RightHandItem = null;
+                RHitemID = -1;
+            }
+            if(RightHandItem.GetComponent<item>().twoHanded == true)
+            {
+                RightHandItem.SetActive(false);
+                RightHandItem = null;
                 RHitemID = -1;
             }
         }
@@ -341,8 +327,12 @@ public class Player : MonoBehaviour
     public void TakeItemInRightHand(int id)
     {
         if(inventory.Count < id + 1) return;
-        Destroy(RightHandItem);
-        RightHandItem = Instantiate(inventory[id].model, transform.position, Quaternion.Euler(new Vector3(0,0,0)));
+        if(RightHandItem != null)
+        {
+            RightHandItem.SetActive(false);
+        }
+
+        RightHandItem = inventory[id].model;
         RightHandItem.SetActive(true);
         RightHandItem.layer = 6;
         var rItem = RightHandItem.GetComponent<item>();
@@ -354,31 +344,30 @@ public class Player : MonoBehaviour
                 RightHandItem.transform.GetChild(i).gameObject.layer = 6;
             }
         }
-
-        if(LeftHandItem != null)
-        {
-            if(LeftHandItem.GetComponent<item>().twoHanded == true)
-            {
-                Destroy(LeftHandItem);
-                LHitemID = -1;
-            }
-        }
-
-        Destroy(RightHandItem.GetComponent<Rigidbody>());
+        RightHandItem.GetComponent<Rigidbody>().isKinematic = true;
         RightHandItem.GetComponent<Collider>().enabled = false;
+
         rItem.currentHand = 2;
         rItem.supplyCount = inventory[id].supplyCount;
         if(id == LHitemID)
         {
             LHitemID = -1;
-            Destroy(LeftHandItem);
+            LeftHandItem.SetActive(false);
+            LeftHandItem = null;
         }
         RHitemID = (short)id;
         if(LeftHandItem != null)
         {
             if(rItem.twoHanded == true)
             {
-                Destroy(LeftHandItem);
+                LeftHandItem.SetActive(false);
+                LeftHandItem = null;
+                LHitemID = -1;
+            }
+            if(LeftHandItem.GetComponent<item>().twoHanded == true)
+            {
+                LeftHandItem.SetActive(false);
+                LeftHandItem = null;
                 LHitemID = -1;
             }
         }

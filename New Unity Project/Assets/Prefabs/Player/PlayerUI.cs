@@ -130,20 +130,27 @@ public class PlayerUI : MonoBehaviour
         {
             if(currentUIitem >= 0) 
             {
-                print("You are just dropped: " + player.inventory[currentUIitem].name + " ID - " + currentUIitem);
-                print(player.LHitemID + " - " + player.RHitemID);
-                player.inventory[currentUIitem].model.transform.position = player.head.transform.position;
+                var changeWeaponPos = true;
                 player.inventory[currentUIitem].model.SetActive(true);
-                player.inventory[currentUIitem].model.GetComponent<item>().supplyCount = player.inventory[currentUIitem].GetComponent<item>().supplyCount;
                 if(player.LHitemID == currentUIitem)
                 {
-                    Destroy(player.LeftHandItem);
+                    player.LeftHandItem.GetComponent<Rigidbody>().isKinematic = false;
+                    player.LeftHandItem.GetComponent<Collider>().enabled = true;
+                    player.LeftHandItem = null;
                     player.LHitemID = -1;
+                    changeWeaponPos = false;
                 }
                 if(player.RHitemID == currentUIitem)
                 {
-                    Destroy(player.RightHandItem);
                     player.RHitemID = -1;
+                    player.RightHandItem.GetComponent<Rigidbody>().isKinematic = false;
+                    player.RightHandItem.GetComponent<Collider>().enabled = true;
+                    player.RightHandItem = null;
+                    changeWeaponPos = false;
+                }
+                if(changeWeaponPos)
+                {
+                    player.inventory[currentUIitem].model.transform.position = player.head.transform.position;
                 }
                 for(int i = currentUIitem; i <= player.inventory.Count - 1; i++)
                 {

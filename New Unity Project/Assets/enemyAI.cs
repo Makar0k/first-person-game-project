@@ -53,6 +53,18 @@ public abstract class enemyAI : MonoBehaviour
 
         animator.SetFloat("speed", curSpeed);
 
+        if(damaged >= stunDamage)
+        {
+            TurnRagdoll(true);
+            stunTimer = stunTime;
+            damaged = 0;
+        }
+
+        if(health <= 0)
+        {
+            TurnRagdoll(true);
+        }
+
         if(!isRagdoll && stunTimer <= 0)
             agent.destination = target.position;
         

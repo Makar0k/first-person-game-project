@@ -15,7 +15,7 @@ public class dumdass : enemyAI, INavLinkHandler
     protected float LinkEndTimerValue;
     RaycastHit hit;
     
-    void Start()
+    new void Start()
     {
         agentMover = GetComponent<AgentLinkMover>();
         base.Start();
@@ -25,7 +25,6 @@ public class dumdass : enemyAI, INavLinkHandler
     }
     public void LinkHandleStart()
     {
-        print("Oh god he is jumping!");
         ChangeMovementSpeed(0);
     }
     public void LinkHandleEnd()
@@ -46,7 +45,7 @@ public class dumdass : enemyAI, INavLinkHandler
         ChangeMovementSpeed(speed);
     }
 
-    void Update()
+    new void Update()
     {
         if(isPatrol && !isRagdoll)
         {

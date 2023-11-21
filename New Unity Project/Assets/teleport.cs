@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class teleport : MonoBehaviour
+public class teleport : Interactable
 {
     public bool isPressable = false;
     public Transform ObjectToTeleport;
@@ -20,9 +20,8 @@ public class teleport : MonoBehaviour
         }
     }
 
-    public void TeleportPlayer(Transform player)
+    public override void Interact()
     {
-        print(222);
-        player.position = ObjectToTeleport.position;
+        player.transform.position = ObjectToTeleport.position;
     }
 }

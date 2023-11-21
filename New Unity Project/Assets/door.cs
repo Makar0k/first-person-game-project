@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class door : MonoBehaviour
+public class door : Interactable
 {
     public Vector3 openRotation;
     protected Quaternion openRotationQ;
@@ -42,7 +42,7 @@ public class door : MonoBehaviour
         }
     }
 
-    public void Interact()
+    public override void Interact()
     {
         if(isOpened == false)
         {
